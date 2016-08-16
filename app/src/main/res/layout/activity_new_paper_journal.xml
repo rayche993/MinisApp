@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true"
+    tools:context=".activity.NewPaperJournal">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearVertical">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearHorizontalJournal">
+
+            <TextView
+                android:layout_width="60dp"
+                android:layout_height="25dp"
+                android:text="Journal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/lblJournal" />
+
+            <AutoCompleteTextView
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:id="@+id/autoCompleteJournal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearHorizontalTitle">
+
+            <TextView
+                android:layout_width="60dp"
+                android:layout_height="25dp"
+                android:text="Title"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/lblTitle" />
+
+            <EditText
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/txtTitle"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearHorizontalLblAuthors">
+
+            <TextView
+                android:layout_width="60dp"
+                android:layout_height="25dp"
+                android:text="Authors"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/lblAuthors" />
+
+            <AutoCompleteTextView
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:id="@+id/autoCompleteAuthors"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearHorizontalAuthors">
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/authorsListView">
+
+            </ListView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearHorizontalLanguage">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="25dp"
+                android:text="Language"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/lblLanguage" />
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/languageSpiner">
+
+            </Spinner>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearHorizontalPaperType">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="25dp"
+                android:text="Paper Type"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/lblPaperType" />
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/paperTypeSpiner">
+
+            </Spinner>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearHorizontalFirstPage">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="25dp"
+                android:text="First Page"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/lblFirstPage" />
+
+            <EditText
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/txtFirstPage"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearHorizontalLastPage">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="25dp"
+                android:text="LastPage"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/lblLastPage" />
+
+            <EditText
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/txtLastPage"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearHorizontalVolume">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="25dp"
+                android:text="Volume"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/lblVolume" />
+
+            <EditText
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/txtVolume"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearHorizontalNumber">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="25dp"
+                android:text="Number"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/lblNumber" />
+
+            <EditText
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/txtNumber"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearHorizontalYear">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="25dp"
+                android:text="Year"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/lblYear" />
+
+            <EditText
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/txtYear"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearHorizontalDoi">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="25dp"
+                android:text="Doi"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/lblPJDoi" />
+
+            <EditText
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/txtPJDoi"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearHorizontalButtons">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnPJCancel"
+                android:layout_marginLeft="10dp"
+                android:text="Cancel"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnPJSave"
+                android:layout_marginLeft="158dp"
+                android:text="Save"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
