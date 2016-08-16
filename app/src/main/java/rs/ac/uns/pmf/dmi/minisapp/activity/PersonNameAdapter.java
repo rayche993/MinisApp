@@ -1,5 +1,6 @@
 package rs.ac.uns.pmf.dmi.minisapp.activity;
 
+import android.database.DataSetObserver;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ListAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -20,6 +22,7 @@ import java.util.Map;
 
 import rs.ac.uns.pmf.dmi.minisapp.R;
 import rs.ac.uns.pmf.dmi.minisapp.model.Journal;
+import rs.ac.uns.pmf.dmi.minisapp.model.Person;
 import rs.ac.uns.pmf.dmi.minisapp.model.PersonName;
 import rs.ac.uns.pmf.dmi.minisapp.model.RestPersonNames;
 import rs.ac.uns.pmf.dmi.minisapp.rest.PersonNamesForPersonRestAsync;
@@ -86,16 +89,27 @@ public class PersonNameAdapter extends BaseAdapter {
             }
         });
 
+        Button btnAdd = (Button)convertView.findViewById(R.id.btnAddPersonName);
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
         Spinner authorsSpinner = (Spinner)convertView.findViewById(R.id.authorsSpinner);
-        ArrayAdapter<PersonName> adapter = new ArrayAdapter<PersonName>(activity, R.layout.dropdown_item, data.get(position));
+        AuthorsAdapter adapter = new AuthorsAdapter(data.get(position));
         authorsSpinner.setAdapter(adapter);
 
-        authorsSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        authorsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                PersonName author = (PersonName)parent.getAdapter().getItem(position);
+            public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
+                PersonName personName = (PersonName)parent.getAdapter().getItem(i);
+                //Collections.swap(((AuthorsAdapter)parent.getAdapter()).getData(), i, 0);
+            }
 
-                //Uradi swap, vidi sta znaci ovaj long id
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
 
@@ -107,8 +121,12 @@ public class PersonNameAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void proceedPost(PersonName personName){
+
+    }
+
     public void add(PersonName item) {
-        new PersonNamesForPersonRestAsync(activity, NewPaperJournal.class, this, HttpMethod.GET, item.getPerson().getId().toString()).execute();
+        new PersonNamesForPersonRestAsync(activity, NewPaperJournal.class, this, HttpMethod.GET, item).execute();
     }
 
     public void clear() {

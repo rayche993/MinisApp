@@ -21,6 +21,7 @@ import rs.ac.uns.pmf.dmi.minisapp.activity.NewPaperJournal;
 import rs.ac.uns.pmf.dmi.minisapp.activity.PersonNameAdapter;
 import rs.ac.uns.pmf.dmi.minisapp.model.LoginInfo;
 import rs.ac.uns.pmf.dmi.minisapp.model.MinisModel;
+import rs.ac.uns.pmf.dmi.minisapp.model.Person;
 import rs.ac.uns.pmf.dmi.minisapp.model.PersonName;
 import rs.ac.uns.pmf.dmi.minisapp.model.RestPersonNames;
 
@@ -32,16 +33,18 @@ public class PersonNamesForPersonRestAsync extends AsyncTask<Void, Void, MinisMo
     private HttpMethod httpMethod;
     private String id;
     private PersonNameAdapter adapter = null;
+    private PersonName personName;
 
     public PersonNamesForPersonRestAsync(){}
 
-    public PersonNamesForPersonRestAsync(MyActivity activity, Class<?> actClass, PersonNameAdapter adapter,HttpMethod method, String id){
+    public PersonNamesForPersonRestAsync(MyActivity activity, Class<?> actClass, PersonNameAdapter adapter, HttpMethod method, PersonName personName){
         if (actClass == NewPaperJournal.class)
             this.activity = (NewPaperJournal)activity;
 
-        this.id = id;
+        this.id = personName.getPerson().getId().toString();
         httpMethod = method;
         this.adapter = adapter;
+        this.personName = personName;
     }
 
     public PersonNamesForPersonRestAsync(PersonNameAdapter adapter, HttpMethod method, String id){
@@ -70,8 +73,12 @@ public class PersonNamesForPersonRestAsync extends AsyncTask<Void, Void, MinisMo
 
             PersonName[] arr = responseEntitys.getBody();
             List<PersonName> personNames = new ArrayList<PersonName>();
-            for (PersonName j : arr)
-                personNames.add(j);
+            personNames.add(personName);
+
+            for (PersonName j : arr) {
+                if (!personName.equals(j))
+                    personNames.add(j);
+            }
 
             RestPersonNames rest = new RestPersonNames();
             rest.setPersonNames(personNames);
