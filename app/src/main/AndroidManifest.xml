@@ -21,7 +21,7 @@
         <activity android:name=".activity.NewJournalActivity" />
         <activity android:name=".activity.JournalsActivity" />
         <activity android:name=".activity.NewPaperJournal" />
-        <activity android:name=".activity.NewPersonName"></activity>
+        <activity android:name=".activity.NewPersonNameActivity"></activity>
     </application>
 
 </manifest>
