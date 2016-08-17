@@ -17,6 +17,8 @@ import java.util.List;
 
 import rs.ac.uns.pmf.dmi.minisapp.activity.MainActivity;
 import rs.ac.uns.pmf.dmi.minisapp.activity.MyActivity;
+import rs.ac.uns.pmf.dmi.minisapp.activity.NewPaperJournal;
+import rs.ac.uns.pmf.dmi.minisapp.activity.PersonNameAdapter;
 import rs.ac.uns.pmf.dmi.minisapp.model.LoginInfo;
 import rs.ac.uns.pmf.dmi.minisapp.model.MinisModel;
 import rs.ac.uns.pmf.dmi.minisapp.model.PaperJournal;
@@ -30,21 +32,23 @@ import rs.ac.uns.pmf.dmi.minisapp.model.RestPersonNames;
 public class PersonNamesRestAsync extends AsyncTask<Void, Void, MinisModel> {
     private MyActivity activity;
     private HttpMethod httpMethod;
-    private String id;
+    private PersonNameAdapter adapter;
+    private PersonName personName;
 
     public PersonNamesRestAsync(){}
 
-    public PersonNamesRestAsync(MyActivity activity, Class<?> actClass, HttpMethod method, String id){
-        if (actClass == MainActivity.class)
-            this.activity = (MainActivity)activity;
+    public PersonNamesRestAsync(MyActivity activity, Class<?> actClass, PersonNameAdapter adapter, PersonName personName){
+        if (actClass == NewPaperJournal.class)
+            this.activity = (NewPaperJournal)activity;
 
-        this.id = id;
-        httpMethod = method;
+        httpMethod = HttpMethod.POST;
+        this.adapter = adapter;
+        this.personName = personName;
     }
 
     @Override
     protected MinisModel doInBackground(Void... params){
-        String url = "http://192.168.1.3:9000/api/personNames/{id}";
+        String url = "http://192.168.1.3:9000/api/personNames/";
 
         HttpHeaders requestHeaders = new HttpHeaders();
 
@@ -53,28 +57,15 @@ public class PersonNamesRestAsync extends AsyncTask<Void, Void, MinisModel> {
         LoginInfo info = activity.getLoginInfo();
         requestHeaders.set("X-Auth-Token", info.getToken());
 
+        HttpEntity<PersonName> requestEntity = new HttpEntity<PersonName>(personName, requestHeaders);
+
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
         try {
-            ResponseEntity<PersonName[]> responseEntitys = null;
-            ResponseEntity<PersonName> responseEntity = null;
-            if (id.equals(""))
-                responseEntitys = restTemplate.exchange(url, httpMethod, new HttpEntity<Object>(requestHeaders), PersonName[].class, id);
-            else
-                responseEntity = restTemplate.exchange(url, httpMethod, new HttpEntity<Object>(requestHeaders), PersonName.class, id);
+            ResponseEntity<PersonName> responseEntity = restTemplate.exchange(url, httpMethod, requestEntity, PersonName.class);
 
-            if (responseEntitys != null) {
-                PersonName[] arr = responseEntitys.getBody();
-                List<PersonName> personNames = new ArrayList<PersonName>();
-                for (PersonName j : arr)
-                    personNames.add(j);
-
-                RestPersonNames rest = new RestPersonNames();
-                rest.setPersonNames(personNames);
-                return rest;
-            }else
-                return responseEntity.getBody();
+            return responseEntity.getBody();
         }catch (HttpClientErrorException e) {
             Log.e("rest", e.getLocalizedMessage(), e);
         } catch (ResourceAccessException e) {

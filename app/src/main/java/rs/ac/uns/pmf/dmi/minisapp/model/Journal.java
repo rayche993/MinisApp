@@ -121,4 +121,9 @@ public class Journal extends MinisModel{
     public String toString() {
         return name;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return getId() == ((Journal)o).getId();
+    }
 }

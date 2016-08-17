@@ -64,7 +64,7 @@ public class JournalsRestAsync extends AsyncTask<Void, Void, MinisModel> {
         HttpHeaders requestHeaders = new HttpHeaders();
 
         requestHeaders.set("Accept","application/json");
-        requestHeaders.set("Content-Type", "application/x-www-form-urlencoded");
+        requestHeaders.set("Content-Type", "application/json");
         LoginInfo info = activity.getLoginInfo();
         requestHeaders.set("X-Auth-Token", info.getToken());
 
@@ -79,7 +79,7 @@ public class JournalsRestAsync extends AsyncTask<Void, Void, MinisModel> {
             ResponseEntity<Journal[]> responseEntitys = null;
             ResponseEntity<Journal> responseEntity = null;
             if (requestEntity != null){
-                responseEntity = restTemplate.exchange(url, httpMethod, requestEntity, Journal.class);
+                responseEntity = restTemplate.exchange(url, httpMethod, requestEntity, Journal.class, "");
             }else {
                 if (id.equals(""))
                     responseEntitys = restTemplate.exchange(url, httpMethod, new HttpEntity<Object>(requestHeaders), Journal[].class, id);

@@ -49,7 +49,7 @@ public class NewJournalActivity extends MyActivity {
         journal = (Journal)result;
         dismissProgressDialog();
         Intent data = new Intent();
-        data.putExtra("journalID", journal.getId());
+        data.putExtra("journalID", journal.getId().toString());
         setResult(Activity.RESULT_OK, data);
         finish();
     }

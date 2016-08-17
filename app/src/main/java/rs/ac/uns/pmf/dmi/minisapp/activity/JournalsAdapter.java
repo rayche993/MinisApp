@@ -56,7 +56,19 @@ public class JournalsAdapter extends BaseAdapter {
     }
 
     public void add(Journal item) {
-        data.add(item);
+        boolean update = false;
+        for (Journal j : data){
+            if (j.equals(item)){
+                int id = data.indexOf(j);
+                data.remove(id);
+                data.add(id, item);
+                update = true;
+            }
+        }
+
+        if (!update)
+            data.add(item);
+
         notifyDataSetChanged();
     }
 
