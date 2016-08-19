@@ -17,11 +17,13 @@ import java.util.List;
 
 import rs.ac.uns.pmf.dmi.minisapp.activity.MainActivity;
 import rs.ac.uns.pmf.dmi.minisapp.activity.MyActivity;
+import rs.ac.uns.pmf.dmi.minisapp.activity.NewPaperJournal;
 import rs.ac.uns.pmf.dmi.minisapp.model.Journal;
 import rs.ac.uns.pmf.dmi.minisapp.model.LoginInfo;
 import rs.ac.uns.pmf.dmi.minisapp.model.MinisModel;
 import rs.ac.uns.pmf.dmi.minisapp.model.PaperJournal;
 import rs.ac.uns.pmf.dmi.minisapp.model.PaperJournalAuthors;
+import rs.ac.uns.pmf.dmi.minisapp.model.Problem;
 import rs.ac.uns.pmf.dmi.minisapp.model.RestJournal;
 import rs.ac.uns.pmf.dmi.minisapp.model.RestPaperJournalAuthors;
 
@@ -32,56 +34,45 @@ public class PaperJournalAuthorsRestAsync extends AsyncTask<Void, Void, MinisMod
     private MyActivity activity;
     private HttpMethod httpMethod;
     private String id;
+    private PaperJournalAuthors authors;
 
     public PaperJournalAuthorsRestAsync(){}
 
-    public PaperJournalAuthorsRestAsync(MyActivity activity, Class<?> actClass, HttpMethod method, String id){
-        if (actClass == MainActivity.class)
-            this.activity = (MainActivity)activity;
+    public PaperJournalAuthorsRestAsync(MyActivity activity, Class<?> actClass, PaperJournalAuthors authors){
+        if (actClass == NewPaperJournal.class)
+            this.activity = (NewPaperJournal)activity;
 
-        this.id = id;
-        httpMethod = method;
+        this.authors = authors;
+
+        httpMethod = HttpMethod.POST;
     }
 
     @Override
     protected MinisModel doInBackground(Void... params){
-        String url = "http://192.168.1.3:9000/api/paperJournalAuthors/{id}";
+        String url = "http://192.168.1.3:9000/api/paperJournalAuthors/";
 
         HttpHeaders requestHeaders = new HttpHeaders();
 
         requestHeaders.set("Accept","application/json");
-        requestHeaders.set("Content-Type", "application/x-www-form-urlencoded");
+        requestHeaders.set("Content-Type", "application/json");
         LoginInfo info = activity.getLoginInfo();
         requestHeaders.set("X-Auth-Token", info.getToken());
+
+        authors.setId(null);
+        HttpEntity<PaperJournalAuthors> requestEntity = new HttpEntity<PaperJournalAuthors>(authors, requestHeaders);
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
         try {
-            ResponseEntity<PaperJournalAuthors[]> responseEntitys = null;
-            ResponseEntity<PaperJournalAuthors> responseEntity = null;
-            if (id.equals(""))
-                responseEntitys = restTemplate.exchange(url, httpMethod, new HttpEntity<Object>(requestHeaders), PaperJournalAuthors[].class, id);
-            else
-                responseEntity = restTemplate.exchange(url, httpMethod, new HttpEntity<Object>(requestHeaders), PaperJournalAuthors.class, id);
+            ResponseEntity<PaperJournalAuthors> responseEntity = restTemplate.exchange(url, httpMethod, requestEntity, PaperJournalAuthors.class);
 
-            if (responseEntitys != null) {
-                PaperJournalAuthors[] arr = responseEntitys.getBody();
-                List<PaperJournalAuthors> paperJournalAuthorses = new ArrayList<PaperJournalAuthors>();
-                for (PaperJournalAuthors j : arr)
-                    paperJournalAuthorses.add(j);
-
-                RestPaperJournalAuthors rest = new RestPaperJournalAuthors();
-                rest.setPaperJournalAuthorses(paperJournalAuthorses);
-                return rest;
-            }else
-                return responseEntity.getBody();
+            return responseEntity.getBody();
         }catch (HttpClientErrorException e) {
-            Log.e("rest", e.getLocalizedMessage(), e);
+            return new Problem("Paper journal author isn't saved!");
         } catch (ResourceAccessException e) {
-            Log.e("rest", e.getLocalizedMessage(), e);
+            return new Problem("Paper journal author isn't saved!");
         }
-        return new PaperJournalAuthors();
     }
 
     @Override

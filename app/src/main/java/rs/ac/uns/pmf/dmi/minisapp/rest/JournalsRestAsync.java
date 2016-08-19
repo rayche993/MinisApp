@@ -59,7 +59,7 @@ public class JournalsRestAsync extends AsyncTask<Void, Void, MinisModel> {
 
     @Override
     protected MinisModel doInBackground(Void... params){
-        String url = "http://192.168.1.3:9000/api/journals/{id}";
+        String url = "http://192.168.1.3:9000/api/journals/";
 
         HttpHeaders requestHeaders = new HttpHeaders();
 
@@ -69,8 +69,10 @@ public class JournalsRestAsync extends AsyncTask<Void, Void, MinisModel> {
         requestHeaders.set("X-Auth-Token", info.getToken());
 
         HttpEntity<Journal> requestEntity = null;
-        if (journal != null)
+        if (journal != null) {
+            journal.setId(null);
             requestEntity = new HttpEntity<Journal>(journal, requestHeaders);
+        }
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
@@ -79,12 +81,12 @@ public class JournalsRestAsync extends AsyncTask<Void, Void, MinisModel> {
             ResponseEntity<Journal[]> responseEntitys = null;
             ResponseEntity<Journal> responseEntity = null;
             if (requestEntity != null){
-                responseEntity = restTemplate.exchange(url, httpMethod, requestEntity, Journal.class, "");
+                responseEntity = restTemplate.exchange(url, httpMethod, requestEntity, Journal.class);
             }else {
                 if (id.equals(""))
-                    responseEntitys = restTemplate.exchange(url, httpMethod, new HttpEntity<Object>(requestHeaders), Journal[].class, id);
+                    responseEntitys = restTemplate.exchange(url, httpMethod, new HttpEntity<Object>(requestHeaders), Journal[].class);
                 else
-                    responseEntity = restTemplate.exchange(url, httpMethod, new HttpEntity<Object>(requestHeaders), Journal.class, id);
+                    responseEntity = restTemplate.exchange(url + "{id}", httpMethod, new HttpEntity<Object>(requestHeaders), Journal.class, id);
             }
 
             if (responseEntitys != null) {
@@ -96,8 +98,10 @@ public class JournalsRestAsync extends AsyncTask<Void, Void, MinisModel> {
                 RestJournal rest = new RestJournal();
                 rest.setJournals(journals);
                 return rest;
-            }else
+            }else {
+                Log.e("JOURNAL_ID", responseEntity.getBody().getId().toString());
                 return responseEntity.getBody();
+            }
         }catch (HttpClientErrorException e) {
             Log.e("rest", e.getLocalizedMessage(), e);
         } catch (ResourceAccessException e) {

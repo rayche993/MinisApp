@@ -64,6 +64,10 @@ public class MyActivity extends AppCompatActivity {
 
     }
 
+    public void proceedResult(MinisModel result, int id) {
+
+    }
+
     public void proceedPost(MinisModel result){
 
     }

@@ -24,6 +24,7 @@ import rs.ac.uns.pmf.dmi.minisapp.model.Journal;
 import rs.ac.uns.pmf.dmi.minisapp.model.LoginInfo;
 import rs.ac.uns.pmf.dmi.minisapp.model.MinisModel;
 import rs.ac.uns.pmf.dmi.minisapp.model.PaperJournal;
+import rs.ac.uns.pmf.dmi.minisapp.model.Problem;
 import rs.ac.uns.pmf.dmi.minisapp.model.RestPaperJournal;
 
 /**
@@ -37,14 +38,6 @@ public class PaperJournalsRestAsync extends AsyncTask<Void, Void, MinisModel> {
 
     public PaperJournalsRestAsync(){}
 
-    public PaperJournalsRestAsync(MyActivity activity, Class<?> actClass, HttpMethod method, String id){
-        if (actClass == NewPaperJournal.class)
-            this.activity = (NewPaperJournal)activity;
-
-        this.id = id;
-        httpMethod = method;
-    }
-
     public PaperJournalsRestAsync(MyActivity activity, Class<?> actClass, PaperJournal paperJournal){
         if (actClass == NewPaperJournal.class)
             this.activity = (NewPaperJournal)activity;
@@ -55,58 +48,35 @@ public class PaperJournalsRestAsync extends AsyncTask<Void, Void, MinisModel> {
 
     @Override
     protected MinisModel doInBackground(Void... params){
-        String url = "http://192.168.1.3:9000/api/paperJournals/{id}";
+        String url = "http://192.168.1.3:9000/api/paperJournals/";
 
         HttpHeaders requestHeaders = new HttpHeaders();
 
         requestHeaders.set("Accept","application/json");
-        requestHeaders.set("Content-Type", "application/x-www-form-urlencoded");
+        requestHeaders.set("Content-Type", "application/json");
         LoginInfo info = activity.getLoginInfo();
         requestHeaders.set("X-Auth-Token", info.getToken());
 
-        HttpEntity<PaperJournal> requestEntity = null;
-        if (paperJournal != null)
-            requestEntity = new HttpEntity<PaperJournal>(paperJournal, requestHeaders);
+        paperJournal.setId(null);
+
+        HttpEntity<PaperJournal> requestEntity = new HttpEntity<PaperJournal>(paperJournal, requestHeaders);
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
         try {
-            ResponseEntity<PaperJournal[]> responseEntitys = null;
-            ResponseEntity<PaperJournal> responseEntity = null;
-            if (requestEntity != null){
-                responseEntity = restTemplate.exchange(url, httpMethod, requestEntity, PaperJournal.class);
-            }else {
-                if (id.equals(""))
-                    responseEntitys = restTemplate.exchange(url, httpMethod, new HttpEntity<Object>(requestHeaders), PaperJournal[].class, id);
-                else
-                    responseEntity = restTemplate.exchange(url, httpMethod, new HttpEntity<Object>(requestHeaders), PaperJournal.class, id);
-            }
+            ResponseEntity<PaperJournal> responseEntity = restTemplate.exchange(url, httpMethod, requestEntity, PaperJournal.class);
 
-            if (responseEntitys != null) {
-                PaperJournal[] arr = responseEntitys.getBody();
-                List<PaperJournal> paperJournals = new ArrayList<PaperJournal>();
-                for (PaperJournal j : arr)
-                    paperJournals.add(j);
-
-                RestPaperJournal rest = new RestPaperJournal();
-                rest.setPaperJournals(paperJournals);
-                return rest;
-            }else
-                return responseEntity.getBody();
+            return responseEntity.getBody();
         }catch (HttpClientErrorException e) {
-            Log.e("rest", e.getLocalizedMessage(), e);
+            return new Problem("Paper journal isn't saved!");
         } catch (ResourceAccessException e) {
-            Log.e("rest", e.getLocalizedMessage(), e);
+            return new Problem("Paper journal isn't saved!");
         }
-        return new PaperJournal();
     }
 
     @Override
     protected void onPostExecute(MinisModel result) {
-        if (paperJournal == null)
-            activity.proceedResult(result);
-        else
-            activity.proceedPost(result);
+        activity.proceedPost(result);
     }
 }

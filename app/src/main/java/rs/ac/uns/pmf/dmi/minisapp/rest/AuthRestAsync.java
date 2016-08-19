@@ -18,11 +18,12 @@ import rs.ac.uns.pmf.dmi.minisapp.activity.MainActivity;
 import rs.ac.uns.pmf.dmi.minisapp.activity.MyActivity;
 import rs.ac.uns.pmf.dmi.minisapp.model.LoginInfo;
 import rs.ac.uns.pmf.dmi.minisapp.model.MinisModel;
+import rs.ac.uns.pmf.dmi.minisapp.model.Problem;
 
 /**
  * Created by rayche on 8/12/16.
  */
-public class AuthRestAsync extends AsyncTask<Void, Void, LoginInfo> {
+public class AuthRestAsync extends AsyncTask<Void, Void, MinisModel> {
     private MyActivity activity;
     private String username;
     private String password;
@@ -41,7 +42,7 @@ public class AuthRestAsync extends AsyncTask<Void, Void, LoginInfo> {
     }
 
     @Override
-    protected LoginInfo doInBackground(Void... params){
+    protected MinisModel doInBackground(Void... params){
         String url = "http://192.168.1.3:9000/api/authenticate?username={user}&password={pass}";
 
         HttpHeaders requestHeaders = new HttpHeaders();
@@ -55,20 +56,15 @@ public class AuthRestAsync extends AsyncTask<Void, Void, LoginInfo> {
         try {
             ResponseEntity<LoginInfo> responseEntity = restTemplate.exchange(url, httpMethod, new HttpEntity<Object>(requestHeaders), LoginInfo.class, username, password);
             return responseEntity.getBody();
-            /*LoginInfo loginInfo = new LoginInfo();
-            loginInfo.setToken("AJDEEEE");
-            loginInfo.setExpires("mrs");
-            return loginInfo;*/
         }catch (HttpClientErrorException e) {
-            Log.e("rest", e.getLocalizedMessage(), e);
+            return new Problem("Bad credentials!");
         } catch (ResourceAccessException e) {
-            Log.e("rest", e.getLocalizedMessage(), e);
+            return new Problem("Network problem!");
         }
-        return new LoginInfo();
     }
 
     @Override
-    protected void onPostExecute(LoginInfo result) {
+    protected void onPostExecute(MinisModel result) {
         activity.proceedResult(result);
     }
 }

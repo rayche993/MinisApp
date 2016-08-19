@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.Iterator;
 import java.util.List;
 
 import rs.ac.uns.pmf.dmi.minisapp.R;
@@ -57,11 +58,22 @@ public class JournalsAdapter extends BaseAdapter {
 
     public void add(Journal item) {
         boolean update = false;
-        for (Journal j : data){
+        Iterator<Journal> iterator = data.iterator();
+        while (iterator.hasNext() && !update){
+            Journal j = iterator.next();
             if (j.equals(item)){
-                int id = data.indexOf(j);
-                data.remove(id);
-                data.add(id, item);
+                j.setName(item.getName());
+                j.setAbbreviation(item.getAbbreviation());
+                j.setAbstracT(item.getAbstracT());
+                j.setDoi(item.getDoi());
+                j.setEissn(item.getEissn());
+                j.setLanguage(item.getLanguage());
+                j.setNote(item.getNote());
+                j.setPissn(item.getPissn());
+                j.setPublisher(item.getPublisher());
+                j.setStatusType(item.getStatusType());
+                j.setUri(item.getUri());
+
                 update = true;
             }
         }

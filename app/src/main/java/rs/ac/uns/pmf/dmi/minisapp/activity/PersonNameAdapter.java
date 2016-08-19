@@ -93,7 +93,7 @@ public class PersonNameAdapter extends BaseAdapter {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                activity.addPersonName(position, data.get(position).get(0).getPerson());
             }
         });
 
@@ -121,12 +121,18 @@ public class PersonNameAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void proceedPost(PersonName personName){
-
+    public void proceedResult(RestPersonNames personNames, int person){
+        data.add(personNames.getPersonNames());
+        notifyDataSetChanged();
     }
 
     public void add(PersonName item) {
         new PersonNamesForPersonRestAsync(activity, NewPaperJournal.class, this, HttpMethod.GET, item).execute();
+    }
+
+    public void add(PersonName item, int person) {
+        data.get(person).add(0, item);
+        notifyDataSetChanged();
     }
 
     public void clear() {

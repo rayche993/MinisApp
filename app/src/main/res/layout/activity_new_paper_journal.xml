@@ -116,7 +116,9 @@
             <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/languageSpiner">
+                android:id="@+id/languageSpiner"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp">
 
             </Spinner>
 
@@ -139,7 +141,9 @@
             <Spinner
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/paperTypeSpiner">
+                android:id="@+id/paperTypeSpiner"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp">
 
             </Spinner>
 

@@ -1,6 +1,7 @@
 package rs.ac.uns.pmf.dmi.minisapp.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,12 +24,14 @@ import rs.ac.uns.pmf.dmi.minisapp.model.LoginInfo;
 import rs.ac.uns.pmf.dmi.minisapp.model.MinisModel;
 import rs.ac.uns.pmf.dmi.minisapp.model.PaperJournal;
 import rs.ac.uns.pmf.dmi.minisapp.model.PaperType;
+import rs.ac.uns.pmf.dmi.minisapp.model.Person;
 import rs.ac.uns.pmf.dmi.minisapp.model.PersonName;
 import rs.ac.uns.pmf.dmi.minisapp.model.RestLanguage;
 import rs.ac.uns.pmf.dmi.minisapp.model.RestPaperType;
 import rs.ac.uns.pmf.dmi.minisapp.rest.LanguageRestAsync;
 import rs.ac.uns.pmf.dmi.minisapp.rest.PaperJournalsRestAsync;
 import rs.ac.uns.pmf.dmi.minisapp.rest.PaperTypeRestAsync;
+import rs.ac.uns.pmf.dmi.minisapp.rest.PersonNamesRestAsync;
 
 public class NewPaperJournal extends MyActivity {
     private PaperJournal paperJournal;
@@ -44,6 +47,7 @@ public class NewPaperJournal extends MyActivity {
     private ListView authorsListView;
     private PersonNameAdapter authorsListAdapter;
     private AutoCompleteTextView personNameAutoComplete;
+    static private final int ADD_PERSON_NAME_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +151,26 @@ public class NewPaperJournal extends MyActivity {
         });
     }
 
+    public void addPersonName(int id, Person person){
+        Intent newPersonName = new Intent(this, NewPersonNameActivity.class);
+        newPersonName.putExtra("id", id);
+        newPersonName.putExtra("personID", person.getId());
+        newPersonName.putExtra("token", getLoginInfo().getToken());
+        startActivityForResult(newPersonName, ADD_PERSON_NAME_REQUEST_CODE);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ADD_PERSON_NAME_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            Bundle extras = data.getExtras();
+            if (extras != null){
+                int person = extras.getInt("person");
+                Long personNameID = extras.getLong("personNameID");
+
+                new PersonNamesRestAsync(this, NewPaperJournal.class, personNameID.toString(), person).execute();
+            }
+        }
+    }
+
     @Override
     public void proceedResult(MinisModel result) {
         if (result.getClass() == RestLanguage.class) {
@@ -157,6 +181,13 @@ public class NewPaperJournal extends MyActivity {
             RestPaperType rest = (RestPaperType)result;
             ArrayAdapter<PaperType> adapter = new ArrayAdapter<PaperType>(this, R.layout.dropdown_item, rest.getContent());
             paperTypeSpinner.setAdapter(adapter);
+        }
+    }
+
+    @Override
+    public void proceedResult(MinisModel result, int id) {
+        if (result.getClass() == PersonName.class){
+            authorsListAdapter.add((PersonName)result, id);
         }
     }
 
