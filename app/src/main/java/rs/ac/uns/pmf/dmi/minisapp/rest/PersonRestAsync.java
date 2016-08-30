@@ -39,7 +39,7 @@ public class PersonRestAsync extends AsyncTask<Void, Void, Person> {
 
     @Override
     protected Person doInBackground(Void... params){
-        String url = "http://192.168.1.3:9000/api/persons/{id}";
+        String url = "http://10.5.0.51:9000/api/persons/{id}";
 
         HttpHeaders requestHeaders = new HttpHeaders();
 

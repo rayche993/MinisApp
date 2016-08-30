@@ -46,7 +46,7 @@ public class ACPersonNameAdapter extends ArrayAdapter<PersonName> implements Fil
     }
 
     private ArrayList<PersonName> getRestPersonNames(CharSequence constraint){
-        String url = "http://192.168.1.3:9000/api/_search/personNames/{id}";
+        String url = "http://10.5.0.51:9000/api/_search/personNames/{id}";
 
         HttpHeaders requestHeaders = new HttpHeaders();
 

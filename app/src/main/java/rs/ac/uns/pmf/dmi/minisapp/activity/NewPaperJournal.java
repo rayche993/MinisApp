@@ -3,6 +3,7 @@ package rs.ac.uns.pmf.dmi.minisapp.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,12 +24,14 @@ import rs.ac.uns.pmf.dmi.minisapp.model.Language;
 import rs.ac.uns.pmf.dmi.minisapp.model.LoginInfo;
 import rs.ac.uns.pmf.dmi.minisapp.model.MinisModel;
 import rs.ac.uns.pmf.dmi.minisapp.model.PaperJournal;
+import rs.ac.uns.pmf.dmi.minisapp.model.PaperJournalAuthors;
 import rs.ac.uns.pmf.dmi.minisapp.model.PaperType;
 import rs.ac.uns.pmf.dmi.minisapp.model.Person;
 import rs.ac.uns.pmf.dmi.minisapp.model.PersonName;
 import rs.ac.uns.pmf.dmi.minisapp.model.RestLanguage;
 import rs.ac.uns.pmf.dmi.minisapp.model.RestPaperType;
 import rs.ac.uns.pmf.dmi.minisapp.rest.LanguageRestAsync;
+import rs.ac.uns.pmf.dmi.minisapp.rest.PaperJournalAuthorsRestAsync;
 import rs.ac.uns.pmf.dmi.minisapp.rest.PaperJournalsRestAsync;
 import rs.ac.uns.pmf.dmi.minisapp.rest.PaperTypeRestAsync;
 import rs.ac.uns.pmf.dmi.minisapp.rest.PersonNamesRestAsync;
@@ -122,7 +125,11 @@ public class NewPaperJournal extends MyActivity {
                 paperJournal.setYear(txtYear.getText().toString());
                 paperJournal.setDoi(txtDoi.getText().toString());
 
-                new PaperJournalsRestAsync(NewPaperJournal.this, NewPaperJournal.class, paperJournal);
+                for (PersonName personName : authorsListAdapter.getNames()){
+                    Log.e("PERSON_NAME", personName.getId() + " " + personName.getFirstname() + " " + personName.getMiddleName() + " " + personName.getLastname());
+                }
+
+                new PaperJournalsRestAsync(NewPaperJournal.this, NewPaperJournal.class, paperJournal).execute();
             }
         });
 
@@ -177,10 +184,12 @@ public class NewPaperJournal extends MyActivity {
             RestLanguage rest = (RestLanguage)result;
             ArrayAdapter<Language> adapter = new ArrayAdapter<Language>(this, R.layout.dropdown_item, rest.getContent());
             languageSpinner.setAdapter(adapter);
+            paperJournal.setLanguage(adapter.getItem(0));
         }else if (result.getClass() == RestPaperType.class){
             RestPaperType rest = (RestPaperType)result;
             ArrayAdapter<PaperType> adapter = new ArrayAdapter<PaperType>(this, R.layout.dropdown_item, rest.getContent());
             paperTypeSpinner.setAdapter(adapter);
+            paperJournal.setPaperType(adapter.getItem(0));
         }
     }
 
@@ -194,8 +203,32 @@ public class NewPaperJournal extends MyActivity {
     @Override
     public void proceedPost(MinisModel result) {
         if (result.getClass() == PaperJournal.class){
-            setResult(Activity.RESULT_OK);
-            finish();
+            paperJournal = (PaperJournal)result;
+            int size = authorsListAdapter.getData().size();
+            if (size > 0) {
+                PaperJournalAuthors authors = new PaperJournalAuthors();
+                authors.setNumOrder(0);
+                authors.setPaperJournal(paperJournal);
+                authors.setPersonName(authorsListAdapter.getNames().get(0));
+                new PaperJournalAuthorsRestAsync(NewPaperJournal.this, NewPaperJournal.class, authors, 0).execute();
+            }
+        }
+    }
+
+    @Override
+    public void proceedPost(MinisModel result, int id) {
+        if (result.getClass() == PaperJournalAuthors.class){
+            int size = authorsListAdapter.getData().size();
+            if (id < size){
+                PaperJournalAuthors authors = new PaperJournalAuthors();
+                authors.setNumOrder(id);
+                authors.setPersonName(authorsListAdapter.getNames().get(id));
+                authors.setPaperJournal(paperJournal);
+                new PaperJournalAuthorsRestAsync(NewPaperJournal.this, NewPaperJournal.class, authors, id).execute();
+            }else {
+                setResult(Activity.RESULT_OK);
+                finish();
+            }
         }
     }
 }

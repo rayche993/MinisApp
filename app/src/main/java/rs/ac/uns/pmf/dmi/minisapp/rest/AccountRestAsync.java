@@ -36,7 +36,7 @@ public class AccountRestAsync extends AsyncTask<Void, Void, User> {
 
     @Override
     protected User doInBackground(Void... params){
-        String url = "http://192.168.1.3:9000/api/account";
+        String url = "http://10.5.0.51:9000/api/account";
 
         HttpHeaders requestHeaders = new HttpHeaders();
 

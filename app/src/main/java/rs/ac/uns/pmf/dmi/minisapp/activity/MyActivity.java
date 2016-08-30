@@ -72,6 +72,10 @@ public class MyActivity extends AppCompatActivity {
 
     }
 
+    public void proceedPost(MinisModel result, int id){
+
+    }
+
     public User getMyUser() {
         return myUser;
     }

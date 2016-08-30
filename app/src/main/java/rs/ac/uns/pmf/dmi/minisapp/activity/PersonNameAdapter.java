@@ -32,11 +32,16 @@ import rs.ac.uns.pmf.dmi.minisapp.rest.PersonNamesForPersonRestAsync;
  */
 public class PersonNameAdapter extends BaseAdapter {
     private List<List<PersonName>> data;
+    private List<PersonName> names;
     private NewPaperJournal activity;
 
     public PersonNameAdapter(NewPaperJournal activity, List<List<PersonName>> personNames){
         data = personNames;
         this.activity = activity;
+        names = new ArrayList<PersonName>();
+        for (List<PersonName> list : personNames){
+            names.add(list.get(0));
+        }
     }
 
     public void setData(List<List<PersonName>> data) {
@@ -105,6 +110,7 @@ public class PersonNameAdapter extends BaseAdapter {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
                 PersonName personName = (PersonName)parent.getAdapter().getItem(i);
+                names.set(i, personName);
                 //Collections.swap(((AuthorsAdapter)parent.getAdapter()).getData(), i, 0);
             }
 
@@ -118,11 +124,13 @@ public class PersonNameAdapter extends BaseAdapter {
 
     public void proceedResult(RestPersonNames personNames){
         data.add(personNames.getPersonNames());
+        names.add(personNames.getPersonNames().get(0));
         notifyDataSetChanged();
     }
 
     public void proceedResult(RestPersonNames personNames, int person){
         data.add(personNames.getPersonNames());
+        names.add(personNames.getPersonNames().get(0));
         notifyDataSetChanged();
     }
 
@@ -132,16 +140,23 @@ public class PersonNameAdapter extends BaseAdapter {
 
     public void add(PersonName item, int person) {
         data.get(person).add(0, item);
+        names.set(person, item);
+
         notifyDataSetChanged();
     }
 
     public void clear() {
         data.clear();
+        names.clear();
         notifyDataSetChanged();
     }
 
     public void addData(List<List<PersonName>> data){
         this.data = data;
+        names.clear();
+        for (List<PersonName> list : data){
+            names.add(list.get(0));
+        }
         notifyDataSetChanged();
     }
 
@@ -151,12 +166,14 @@ public class PersonNameAdapter extends BaseAdapter {
 
     public void removeItem(int position){
         data.remove(position);
+        names.remove(position);
         notifyDataSetChanged();
     }
 
     public void moveUpItem(int position){
         if (position > 0) {
             Collections.swap(data, position, position - 1);
+            Collections.swap(names, position, position - 1);
             notifyDataSetChanged();
         }
     }
@@ -164,7 +181,16 @@ public class PersonNameAdapter extends BaseAdapter {
     public  void moveDownItem(int position){
         if (position < data.size() - 1){
             Collections.swap(data, position, position + 1);
+            Collections.swap(names, position, position + 1);
             notifyDataSetChanged();
         }
+    }
+
+    public List<PersonName> getNames() {
+        return names;
+    }
+
+    public void setNames(List<PersonName> names) {
+        this.names = names;
     }
 }

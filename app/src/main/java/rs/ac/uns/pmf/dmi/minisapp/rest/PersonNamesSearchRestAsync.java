@@ -43,7 +43,7 @@ public class PersonNamesSearchRestAsync extends AsyncTask<Void, Void, MinisModel
 
     @Override
     protected MinisModel doInBackground(Void... params){
-        String url = "http://192.168.1.3:9000/api/_search/personNames/{id}";
+        String url = "http://10.5.0.51:9000/api/_search/personNames/{id}";
 
         HttpHeaders requestHeaders = new HttpHeaders();
 

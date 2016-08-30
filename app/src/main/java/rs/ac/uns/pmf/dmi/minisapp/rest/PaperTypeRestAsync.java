@@ -43,7 +43,7 @@ public class PaperTypeRestAsync extends AsyncTask<Void, Void, MinisModel> {
 
     @Override
     protected MinisModel doInBackground(Void... params){
-        String url = "http://192.168.1.3:9000/api/paperTypes/{id}";
+        String url = "http://10.5.0.51:9000/api/paperTypes/{id}";
 
         HttpHeaders requestHeaders = new HttpHeaders();
 

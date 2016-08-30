@@ -53,7 +53,7 @@ public class ACJournalAdapter extends ArrayAdapter<Journal> implements Filterabl
     }
 
     private ArrayList<Journal> getRestJournals(CharSequence constraint){
-        String url = "http://192.168.1.3:9000/api/_search/journals/{id}";
+        String url = "http://10.5.0.51:9000/api/_search/journals/{id}";
 
         HttpHeaders requestHeaders = new HttpHeaders();
 

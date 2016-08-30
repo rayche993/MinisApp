@@ -33,23 +33,23 @@ import rs.ac.uns.pmf.dmi.minisapp.model.RestPaperJournalAuthors;
 public class PaperJournalAuthorsRestAsync extends AsyncTask<Void, Void, MinisModel> {
     private MyActivity activity;
     private HttpMethod httpMethod;
-    private String id;
+    private int id;
     private PaperJournalAuthors authors;
 
     public PaperJournalAuthorsRestAsync(){}
 
-    public PaperJournalAuthorsRestAsync(MyActivity activity, Class<?> actClass, PaperJournalAuthors authors){
+    public PaperJournalAuthorsRestAsync(MyActivity activity, Class<?> actClass, PaperJournalAuthors authors, int id){
         if (actClass == NewPaperJournal.class)
             this.activity = (NewPaperJournal)activity;
 
         this.authors = authors;
-
+        this.id = id;
         httpMethod = HttpMethod.POST;
     }
 
     @Override
     protected MinisModel doInBackground(Void... params){
-        String url = "http://192.168.1.3:9000/api/paperJournalAuthors/";
+        String url = "http://10.5.0.51:9000/api/paperJournalAuthorss/";
 
         HttpHeaders requestHeaders = new HttpHeaders();
 
@@ -77,6 +77,6 @@ public class PaperJournalAuthorsRestAsync extends AsyncTask<Void, Void, MinisMod
 
     @Override
     protected void onPostExecute(MinisModel result) {
-        activity.proceedResult(result);
+        activity.proceedPost(result, id + 1);
     }
 }
