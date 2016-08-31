@@ -13,6 +13,7 @@ import android.widget.Toast;
 import org.springframework.http.HttpMethod;
 
 import rs.ac.uns.pmf.dmi.minisapp.R;
+import rs.ac.uns.pmf.dmi.minisapp.model.Journal;
 import rs.ac.uns.pmf.dmi.minisapp.model.LoginInfo;
 import rs.ac.uns.pmf.dmi.minisapp.model.MinisModel;
 import rs.ac.uns.pmf.dmi.minisapp.model.User;
@@ -21,6 +22,8 @@ import rs.ac.uns.pmf.dmi.minisapp.rest.JournalsRestAsync;
 
 public class MenuActivity extends MyActivity {
     static private final int ADD_PAPER_JOURNAL_REQUEST_CODE = 1;
+    static private final int SHOW_POPULAR_JOURNALS_REQUEST_CODE = 2;
+    static private final int SHOW_JOURNALS_REQUEST_CODE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,7 @@ public class MenuActivity extends MyActivity {
             public void onClick(View v) {
                 Intent journals = new Intent(MenuActivity.this, JournalsActivity.class);
                 journals.putExtra("token", getLoginInfo().getToken());
+                journals.putExtra("request_code", SHOW_JOURNALS_REQUEST_CODE);
                 startActivity(journals);
             }
         });
@@ -54,6 +58,17 @@ public class MenuActivity extends MyActivity {
                 Intent addPaperJournal = new Intent(MenuActivity.this, NewPaperJournal.class);
                 addPaperJournal.putExtra("token", getLoginInfo().getToken());
                 startActivityForResult(addPaperJournal, ADD_PAPER_JOURNAL_REQUEST_CODE);
+            }
+        });
+
+        Button btnPopularJournals = (Button)findViewById(R.id.btnPopularJournals);
+        btnPopularJournals.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent journals = new Intent(MenuActivity.this, JournalsActivity.class);
+                journals.putExtra("token", getLoginInfo().getToken());
+                journals.putExtra("request_code", SHOW_POPULAR_JOURNALS_REQUEST_CODE);
+                startActivity(journals);
             }
         });
     }
