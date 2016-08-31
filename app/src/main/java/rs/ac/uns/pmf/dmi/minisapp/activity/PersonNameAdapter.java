@@ -110,7 +110,7 @@ public class PersonNameAdapter extends BaseAdapter {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
                 PersonName personName = (PersonName)parent.getAdapter().getItem(i);
-                names.set(i, personName);
+                names.set(position, personName);
                 //Collections.swap(((AuthorsAdapter)parent.getAdapter()).getData(), i, 0);
             }
 
@@ -125,16 +125,19 @@ public class PersonNameAdapter extends BaseAdapter {
     public void proceedResult(RestPersonNames personNames){
         data.add(personNames.getPersonNames());
         names.add(personNames.getPersonNames().get(0));
+
         notifyDataSetChanged();
     }
 
     public void proceedResult(RestPersonNames personNames, int person){
         data.add(personNames.getPersonNames());
         names.add(personNames.getPersonNames().get(0));
+
         notifyDataSetChanged();
     }
 
     public void add(PersonName item) {
+
         new PersonNamesForPersonRestAsync(activity, NewPaperJournal.class, this, HttpMethod.GET, item).execute();
     }
 
@@ -178,7 +181,7 @@ public class PersonNameAdapter extends BaseAdapter {
         }
     }
 
-    public  void moveDownItem(int position){
+    public void moveDownItem(int position){
         if (position < data.size() - 1){
             Collections.swap(data, position, position + 1);
             Collections.swap(names, position, position + 1);
