@@ -78,7 +78,6 @@ public class JournalsActivity extends MyActivity {
                 Cursor c = readJournals();
                 while (c.moveToNext()){
                     PopularJournal journal = new PopularJournal(c.getInt(0), c.getInt(1), c.getInt(2));
-                    Log.e("POPULAR_JOURNAL", journal.getId() + " " + journal.getJournal_id() + " " + journal.getNumber());
                     popularJournals.add(journal);
                 }
 
