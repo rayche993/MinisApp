@@ -16,10 +16,10 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
     final private static String CREATE_CMD =
 
-            "CREATE TABLE artists (" + _ID
+            "CREATE TABLE journals (" + _ID
                     + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + JOURNAL_ID + " TEXT NOT NULL, "
-                    + NUMBER_OF_PAPAER_JOURNALS + " INT NOT NULL)";
+                    + JOURNAL_ID + " INTEGER NOT NULL, "
+                    + NUMBER_OF_PAPAER_JOURNALS + " INTEGER NOT NULL)";
 
     final private static String NAME = "journals_db";
     final private static Integer VERSION = 1;

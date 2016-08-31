@@ -1,7 +1,9 @@
 package rs.ac.uns.pmf.dmi.minisapp.activity;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -51,6 +53,7 @@ public class NewPaperJournal extends MyActivity {
     private PersonNameAdapter authorsListAdapter;
     private AutoCompleteTextView personNameAutoComplete;
     static private final int ADD_PERSON_NAME_REQUEST_CODE = 1;
+    private DatabaseOpenHelper mDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,10 +127,6 @@ public class NewPaperJournal extends MyActivity {
                 paperJournal.setNumber(txtNumber.getText().toString());
                 paperJournal.setYear(txtYear.getText().toString());
                 paperJournal.setDoi(txtDoi.getText().toString());
-
-                for (PersonName personName : authorsListAdapter.getNames()){
-                    Log.e("PERSON_NAME", personName.getId() + " " + personName.getFirstname() + " " + personName.getMiddleName() + " " + personName.getLastname());
-                }
 
                 new PaperJournalsRestAsync(NewPaperJournal.this, NewPaperJournal.class, paperJournal).execute();
             }
@@ -204,6 +203,30 @@ public class NewPaperJournal extends MyActivity {
     public void proceedPost(MinisModel result) {
         if (result.getClass() == PaperJournal.class){
             paperJournal = (PaperJournal)result;
+
+            mDbHelper = new DatabaseOpenHelper(this);
+
+            Cursor c = mDbHelper.getWritableDatabase().query(DatabaseOpenHelper.TABLE_NAME,
+                    DatabaseOpenHelper.columns, "journal_id = ?", new String[] {Long.toString(paperJournal.getJournal().getId())}, null, null,
+                    null);
+
+            if (c.moveToNext()){
+                ContentValues values = new ContentValues();
+                int number = c.getInt(2);
+                int id = c.getInt(0);
+                values.put(DatabaseOpenHelper.NUMBER_OF_PAPAER_JOURNALS, number + 1);
+                mDbHelper.getWritableDatabase().update(DatabaseOpenHelper.TABLE_NAME, values, "_id="+id, null);
+                values.clear();
+            }else{
+                ContentValues values = new ContentValues();
+                values.put(DatabaseOpenHelper.JOURNAL_ID, paperJournal.getJournal().getId().intValue());
+                values.put(DatabaseOpenHelper.NUMBER_OF_PAPAER_JOURNALS, 1);
+                mDbHelper.getWritableDatabase().insert(DatabaseOpenHelper.TABLE_NAME, null, values);
+                values.clear();
+            }
+
+            mDbHelper.getWritableDatabase().close();
+
             int size = authorsListAdapter.getData().size();
             if (size > 0) {
                 PaperJournalAuthors authors = new PaperJournalAuthors();

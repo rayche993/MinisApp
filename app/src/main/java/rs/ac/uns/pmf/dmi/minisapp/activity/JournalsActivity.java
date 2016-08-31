@@ -2,22 +2,27 @@ package rs.ac.uns.pmf.dmi.minisapp.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import rs.ac.uns.pmf.dmi.minisapp.R;
 import rs.ac.uns.pmf.dmi.minisapp.activity.MyActivity;
 import rs.ac.uns.pmf.dmi.minisapp.model.Journal;
 import rs.ac.uns.pmf.dmi.minisapp.model.LoginInfo;
 import rs.ac.uns.pmf.dmi.minisapp.model.MinisModel;
+import rs.ac.uns.pmf.dmi.minisapp.model.PopularJournal;
 import rs.ac.uns.pmf.dmi.minisapp.model.RestJournal;
 import rs.ac.uns.pmf.dmi.minisapp.model.User;
 import rs.ac.uns.pmf.dmi.minisapp.rest.JournalsRestAsync;
@@ -27,13 +32,21 @@ public class JournalsActivity extends MyActivity {
     static private final int ADD_JOURNAL_REQUEST_CODE = 1;
     static private final int EDIT_JOURNAL_REQUEST_CODE = 2;
     private ListView listView;
+    private DatabaseOpenHelper mDbHelper;
+    private List<PopularJournal> popularJournals;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_journals);
 
+        popularJournals = new ArrayList<PopularJournal>();
+
+        Button btnAddJournal = (Button)findViewById(R.id.btnAddJournal);
+
         listView = (ListView)findViewById(R.id.listView);
+        journalsAdapter = new JournalsAdapter(new ArrayList<Journal>());
+        listView.setAdapter(journalsAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -52,11 +65,35 @@ public class JournalsActivity extends MyActivity {
             LoginInfo loginInfo = new LoginInfo();
             loginInfo.setToken(token);
             setLoginInfo(loginInfo);
-            showLoadingProgressDialog();
-            new JournalsRestAsync(JournalsActivity.this, JournalsActivity.class, "").execute();
+
+            int request_code = extras.getInt("request_code");
+
+
+            if (request_code == 0) {
+                showLoadingProgressDialog();
+                new JournalsRestAsync(JournalsActivity.this, JournalsActivity.class, "").execute();
+            }else{
+                btnAddJournal.setEnabled(false);
+                mDbHelper = new DatabaseOpenHelper(this);
+                Cursor c = readJournals();
+                while (c.moveToNext()){
+                    PopularJournal journal = new PopularJournal(c.getInt(0), c.getInt(1), c.getInt(2));
+                    Log.e("POPULAR_JOURNAL", journal.getId() + " " + journal.getJournal_id() + " " + journal.getNumber());
+                    popularJournals.add(journal);
+                }
+
+                if (popularJournals.size() > 0) {
+                    showLoadingProgressDialog();
+                    for (PopularJournal pj : popularJournals) {
+                        new JournalsRestAsync(JournalsActivity.this, JournalsActivity.class, Integer.toString(pj.getJournal_id())).execute();
+                    }
+                }
+
+                mDbHelper.getWritableDatabase().close();
+            }
         }
 
-        Button btnAddJournal = (Button)findViewById(R.id.btnAddJournal);
+
         btnAddJournal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,14 +105,18 @@ public class JournalsActivity extends MyActivity {
         });
     }
 
+    private Cursor readJournals() {
+        return mDbHelper.getWritableDatabase().query(DatabaseOpenHelper.TABLE_NAME,
+                DatabaseOpenHelper.columns, null, new String[] {}, null, null,
+                "number_of_paper_journals DESC");
+    }
+
     @Override
     public void proceedResult(MinisModel result){
         if (result.getClass() == RestJournal.class){
-            journalsAdapter = new JournalsAdapter(((RestJournal)result).getJournals());
-            listView.setAdapter(journalsAdapter);
+            journalsAdapter.setData(((RestJournal)result).getJournals());
         }else if (result.getClass() == Journal.class){
-            Journal journal = (Journal)result;
-            journalsAdapter.add(journal);
+            journalsAdapter.add((Journal)result);
         }
         dismissProgressDialog();
     }

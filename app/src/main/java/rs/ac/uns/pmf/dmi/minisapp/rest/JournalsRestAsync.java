@@ -99,7 +99,6 @@ public class JournalsRestAsync extends AsyncTask<Void, Void, MinisModel> {
                 rest.setJournals(journals);
                 return rest;
             }else {
-                Log.e("JOURNAL_ID", responseEntity.getBody().getId().toString());
                 return responseEntity.getBody();
             }
         }catch (HttpClientErrorException e) {
