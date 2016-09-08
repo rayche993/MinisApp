@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import org.springframework.http.HttpMethod;
 
@@ -54,6 +55,7 @@ public class NewPaperJournal extends MyActivity {
     private AutoCompleteTextView personNameAutoComplete;
     static private final int ADD_PERSON_NAME_REQUEST_CODE = 1;
     private DatabaseOpenHelper mDbHelper;
+    private Long personID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +77,7 @@ public class NewPaperJournal extends MyActivity {
             LoginInfo loginInfo = new LoginInfo();
             loginInfo.setToken(extras.getString("token"));
             super.setLoginInfo(loginInfo);
+            personID = extras.getLong("personID");
         }
 
         new LanguageRestAsync(NewPaperJournal.this, NewPaperJournal.class, HttpMethod.GET, "").execute();
@@ -102,7 +105,20 @@ public class NewPaperJournal extends MyActivity {
         personNameAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                authorsListAdapter.add((PersonName)parent.getAdapter().getItem(position));
+                PersonName personName = (PersonName)parent.getAdapter().getItem(position);
+
+                boolean found = false;
+                for (PersonName pn : authorsListAdapter.getNames()){
+                    if (pn.getPerson().getId() == personName.getPerson().getId()) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                    authorsListAdapter.add(personName);
+                else
+                    Toast.makeText(NewPaperJournal.this, "The author has already been added!", Toast.LENGTH_LONG).show();
+
                 personNameAutoComplete.setText("");
             }
         });
@@ -128,7 +144,23 @@ public class NewPaperJournal extends MyActivity {
                 paperJournal.setYear(txtYear.getText().toString());
                 paperJournal.setDoi(txtDoi.getText().toString());
 
-                new PaperJournalsRestAsync(NewPaperJournal.this, NewPaperJournal.class, paperJournal).execute();
+                //provere
+                boolean author = false;
+                for (PersonName pn : authorsListAdapter.getNames()){
+                    if (pn.getPerson().getId() == personID){
+                        author = true;
+                        break;
+                    }
+                }
+
+                if (authorsListAdapter.getNames().size() == 0)
+                    Toast.makeText(NewPaperJournal.this, "There are no authors selected!", Toast.LENGTH_LONG).show();
+                else if (!author)
+                    Toast.makeText(NewPaperJournal.this, "You have to be one of authors!", Toast.LENGTH_LONG).show();
+                else if (paperJournal.getJournal() == null || paperJournal.getTitle().isEmpty())
+                    Toast.makeText(NewPaperJournal.this, "Fields with symbol (*) must be filled!", Toast.LENGTH_LONG).show();
+                else
+                    new PaperJournalsRestAsync(NewPaperJournal.this, NewPaperJournal.class, paperJournal).execute();
             }
         });
 

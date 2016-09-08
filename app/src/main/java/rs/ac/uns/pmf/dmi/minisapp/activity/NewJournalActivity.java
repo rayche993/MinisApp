@@ -29,6 +29,7 @@ public class NewJournalActivity extends MyActivity {
     private EditText txtAbstract;
     private EditText txtUri;
     private EditText txtDoi;
+    private int requestCode;
 
     public NewJournalActivity(){
 
@@ -74,7 +75,7 @@ public class NewJournalActivity extends MyActivity {
             loginInfo.setToken(token);
             setLoginInfo(loginInfo);
 
-            int requestCode = extras.getInt("requestCode");
+            requestCode = extras.getInt("requestCode");
 
             if (requestCode == 2){
                 showLoadingProgressDialog();
@@ -89,8 +90,6 @@ public class NewJournalActivity extends MyActivity {
             public void onClick(View v) {
                 showLoadingProgressDialog();
                 setJournal();
-                Bundle extras = getIntent().getExtras();
-                int requestCode = extras.getInt("requestCode");
 
                 if (requestCode == 1)
                     new JournalsRestAsync(NewJournalActivity.this, NewJournalActivity.class, HttpMethod.POST, journal).execute();
@@ -115,7 +114,7 @@ public class NewJournalActivity extends MyActivity {
 
         journal.setName(txtName.getText().toString());
         journal.setEissn(txtEIssn.getText().toString());
-        journal.setPissn(txtEIssn.getText().toString());
+        journal.setPissn(txtPIssn.getText().toString());
         journal.setAbbreviation(txtAbbreviation.getText().toString());
         journal.setNote(txtNote.getText().toString());
         journal.setAbstracT(txtAbstract.getText().toString());

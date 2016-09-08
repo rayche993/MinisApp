@@ -70,7 +70,9 @@ public class JournalsRestAsync extends AsyncTask<Void, Void, MinisModel> {
 
         HttpEntity<Journal> requestEntity = null;
         if (journal != null) {
-            journal.setId(null);
+            if (httpMethod == HttpMethod.POST)
+                journal.setId(null);
+
             requestEntity = new HttpEntity<Journal>(journal, requestHeaders);
         }
 

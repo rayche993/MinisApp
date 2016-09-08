@@ -22,7 +22,7 @@
             <TextView
                 android:layout_width="60dp"
                 android:layout_height="25dp"
-                android:text="Journal"
+                android:text="Journal *"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:id="@+id/lblJournal" />
@@ -45,7 +45,7 @@
             <TextView
                 android:layout_width="60dp"
                 android:layout_height="25dp"
-                android:text="Title"
+                android:text="Title *"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:id="@+id/lblTitle" />
@@ -69,7 +69,7 @@
             <TextView
                 android:layout_width="60dp"
                 android:layout_height="25dp"
-                android:text="Authors"
+                android:text="Authors *"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:id="@+id/lblAuthors" />
@@ -92,7 +92,7 @@
 
             <ListView
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="330dp"
                 android:id="@+id/authorsListView">
 
             </ListView>
@@ -292,6 +292,14 @@
                 android:id="@+id/txtPJDoi"/>
 
         </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:id="@+id/linearHorizontalSpace">
+
+    </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"

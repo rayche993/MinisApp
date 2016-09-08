@@ -57,6 +57,7 @@ public class MenuActivity extends MyActivity {
             public void onClick(View v) {
                 Intent addPaperJournal = new Intent(MenuActivity.this, NewPaperJournal.class);
                 addPaperJournal.putExtra("token", getLoginInfo().getToken());
+                addPaperJournal.putExtra("personID", getMyUser().getPersonId());
                 startActivityForResult(addPaperJournal, ADD_PAPER_JOURNAL_REQUEST_CODE);
             }
         });
